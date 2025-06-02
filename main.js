@@ -39,9 +39,9 @@ export async function ambilDaftarTodo() {
     const refDokumen = collection(basisdata, "todo"); // Pastikan koleksi bernama "todo"
     const kueri = query(refDokumen, orderBy("teks")); // Urutkan berdasarkan teks tugas
     const cuplikanKueri = await getDocs(kueri);
-
+    
     const hasilKueri = [];
-
+    
     cuplikanKueri.forEach((dokumen) => {
       const data = dokumen.data();
       hasilKueri.push({
@@ -50,10 +50,69 @@ export async function ambilDaftarTodo() {
         status: data.status
       });
     });
-
+    
     return hasilKueri;
   } catch (error) {
     console.error("Gagal mengambil daftar todo:", error);
     throw error;
   }
+}
+
+
+
+// 🔹 Ambil semua todo
+export async function ambilDaftarTodo() {
+  const refDokumen = collection(basisdata, "todolist");
+  const kueri = query(refDokumen, orderBy("judul"));
+  const cuplikanKueri = await getDocs(kueri);
+  
+  let hasilKueri = [];
+  cuplikanKueri.forEach((dokumen) => {
+    hasilKueri.push({
+      id: dokumen.id,
+      judul: dokumen.data().judul,
+      deskripsi: dokumen.data().deskripsi,
+      selesai: dokumen.data().selesai
+    })
+  })
+  
+  return hasilKueri;
+}
+
+// 🔹 Tambah todo
+export async function tambahTodo(judul, deskripsi, selesai = false) {
+  try {
+    await addDoc(collection(basisdata, "todolist"), {
+      teks: teks,
+      status: status
+    })
+    console.log('Berhasil menambahkan todo');
+  } catch (error) {
+    console.log('Gagal menambahkan todo: ' + error);
+  }
+}
+
+// 🔹 Hapus todo
+export async function hapusTodo(id) {
+  await deleteDoc(doc(basisdata, "todolist", id));
+}
+
+// 🔹 Ubah todo
+export async function ubahTodo(id, judulBaru, deskripsiBaru, selesaiBaru) {
+  await updateDoc(
+    doc(basisdata, "todolist", id),
+    {
+      judul: judulBaru,
+      deskripsi: deskripsiBaru,
+      selesai: selesaiBaru
+    }
+  );
+}
+
+// 🔹 Ambil detail todo berdasarkan ID
+export async function ambilTodo(id) {
+  const refDokumen = doc(basisdata, "todolist", id);
+  const snapshotDokumen = await getDoc(refDokumen);
+  
+  return snapshotDokumen.data();
 }
