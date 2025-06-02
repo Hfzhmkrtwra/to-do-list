@@ -112,6 +112,36 @@
                     <i class="bi bi-plus-circle"></i> Tambah Tugas
                 </button>
             </form>
+            
+            <script type="module">
+                import { tambahTodo } from './main.js';
+                
+                $(document).ready(function() {
+                    $('#todo-form').on('submit', async function(event) {
+                        event.preventDefault();
+                        
+                        const namaTugas = $('#task-input').val();
+                        const status = $('#status-select').val();
+                        
+                        // Validasi sederhana
+                        if (!namaTugas || !status) {
+                            alert('Mohon isi semua kolom!');
+                            return;
+                        }
+                        
+                        // Kirim data ke Firestore
+                        try {
+                            await tambahTodo(namaTugas, '', status); // deskripsi dikosongkan
+                            alert('Tugas berhasil ditambahkan!');
+                            location.reload(); // Refresh halaman agar daftar tugas terupdate
+                        } catch (error) {
+                            console.error('Gagal menambahkan tugas:', error);
+                            alert('Terjadi kesalahan saat menambahkan tugas.');
+                        }
+                    });
+                });
+            </script>
+            
 </body>
 
 </html>

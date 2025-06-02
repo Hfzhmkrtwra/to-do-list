@@ -77,7 +77,7 @@ export async function ambilDaftarTodo() {
 }
 
 // 🔹 Tambah todo
-export async function tambahTodo(judul, deskripsi, status = "belum") {
+export async function tambahTodo(teks, status = "belum") {
   try {
     await addDoc(collection(basisdata, "todo"), {
       teks: teks,
@@ -95,7 +95,7 @@ export async function hapusTodo(id) {
 }
 
 // 🔹 Ubah todo
-export async function ubahTodo(id, judulBaru, deskripsiBaru, statusBaru) {
+export async function ubahTodo(id, teksBaru, statusBaru) {
   await updateDoc(doc(basisdata, "todo", id), {
     teks: teksBaru,
     status: statusBaru
