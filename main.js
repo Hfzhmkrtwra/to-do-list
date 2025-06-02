@@ -29,11 +29,6 @@ const aplikasi = initializeApp(firebaseConfig)
 const basisdata = getFirestore(aplikasi)
 
 // tambahkan fungsi untuk menampilkan daftar to do list
-
-// Import fungsi yang dibutuhkan dari Firebase Firestore
-import { collection, query, orderBy, getDocs } from "firebase/firestore";
-import { basisdata } from "./firebaseConfig"; // Sesuaikan path ke konfigurasi Firebase Anda
-
 export async function ambilDaftarTodo() {
   try {
     const refDokumen = collection(basisdata, "todo"); // Pastikan koleksi bernama "todo"
@@ -58,53 +53,35 @@ export async function ambilDaftarTodo() {
   }
 }
 
-// 🔹 Ambil semua todo
-export async function ambilDaftarTodo() {
-  const refDokumen = collection(basisdata, "todo");
-  const kueri = query(refDokumen, orderBy("teks")); // Urutkan berdasarkan judul
-  const cuplikanKueri = await getDocs(kueri);
-  
-  let hasilKueri = [];
-  cuplikanKueri.forEach((dokumen) => {
-    hasilKueri.push({
-      id: dokumen.id,
-      teks: dokumen.data().teks,
-      status: dokumen.data().status // Ganti dari 'selesai'
-    });
-  });
-  
-  return hasilKueri;
-}
-
 // 🔹 Tambah todo
 export async function tambahTodo(teks, status = "belum") {
-  try {
-    await addDoc(collection(basisdata, "todo"), {
-      teks: teks,
-      status: status // Default "belum", bisa juga "proses" atau "selesai"
-    });
-    console.log('Berhasil menambahkan todo');
-  } catch (error) {
-    console.log('Gagal menambahkan todo: ' + error);
-  }
+  try {
+    await addDoc(collection(basisdata, "todo"), {
+      teks: teks,
+      status: status // Default "belum", bisa juga "proses" atau "selesai"
+    });
+    console.log('Berhasil menambahkan todo');
+  } catch (error) {
+    console.log('Gagal menambahkan todo: ' + error);
+  }
 }
 
 // 🔹 Hapus todo
 export async function hapusTodo(id) {
-  await deleteDoc(doc(basisdata, "todo", id));
+  await deleteDoc(doc(basisdata, "todo", id));
 }
 
 // 🔹 Ubah todo
 export async function ubahTodo(id, teksBaru, statusBaru) {
-  await updateDoc(doc(basisdata, "todo", id), {
-    teks: teksBaru,
-    status: statusBaru
-  });
+  await updateDoc(doc(basisdata, "todo", id), {
+    teks: teksBaru,
+    status: statusBaru
+  });
 }
 
 // 🔹 Ambil detail todo berdasarkan ID
 export async function ambilTodo(id) {
-  const refDokumen = doc(basisdata, "todo", id);
-  const snapshotDokumen = await getDoc(refDokumen);
-  return snapshotDokumen.data();
+  const refDokumen = doc(basisdata, "todo", id);
+  const snapshotDokumen = await getDoc(refDokumen);
+  return snapshotDokumen.data();
 }
