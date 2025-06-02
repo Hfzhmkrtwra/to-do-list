@@ -67,29 +67,6 @@
                     </tr>
                 </thead>
                 <tbody id="daftar-todo">
-                    <tr>
-                        <td>1</td>
-                        <td>Membuat laporan mingguan</td>
-                        <td><span class="badge bg-success">Selesai</span></td>
-                        <td>
-                            <a href="#" class="text-warning me-2" title="Ubah"><i class="bi bi-pencil-square"></i></a>
-                            <a href="#" class="text-danger me-2" title="Hapus"><i class="bi bi-trash"></i></a>
-                            <a href="#" class="text-success" title="Tandai Selesai"><i class="bi bi-check-circle-fill"></i></a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Menghadiri rapat tim</td>
-                        <td><span class="badge bg-secondary">Belum Selesai</span></td>
-                        <td>
-                            <a href="#" class="text-warning me-2" title="Ubah"><i class="bi bi-pencil-square"></i></a>
-                            <a href="#" class="text-danger me-2" title="Hapus"><i class="bi bi-trash"></i></a>
-                            <a href="#" class="text-success" title="Tandai Selesai"><i class="bi bi-check-circle"></i></a>
-                        </td>
-                    </tr>
-                    
-                    
-                    <!-- Tambahkan baris lainnya di sini -->
                 </tbody>
             </table>
             
@@ -114,9 +91,9 @@
             </form>
             
             <script type="module">
-                import { tambahTodo, ambilTodo } from './main.js';
+                import { tambahTodo, ambilTodo, ambilDaftarTodo } from './main.js';
                 
-                $(document).ready(function() {
+                $(document).ready(async function() {
                     
                     let daftarTodo = await ambilDaftarTodo();
                     let elemenDaftar = $('#daftar-todo');
@@ -124,13 +101,21 @@
                     
                     daftarTodo.forEach((todo) => {
                         let statusBadge = '';
-                        if (todo.status.toLowerCase() === 'selesai') {
-                            statusBadge = `<span class="badge bg-success">${todo.status}</span>`;
+                        if (todo.status.toLowerCase() ===  'selesai') {
+                            statusBadge = `<span class="badge bg-success">
+    <i class="bi bi-check-circle-fill me-1"></i>${todo.status}
+  </span>`;
                         } else if (todo.status.toLowerCase() === 'proses') {
-                            statusBadge = `<span class="badge bg-warning text-dark">${todo.status}</span>`;
+                            statusBadge = `<span class="badge bg-warning text-dark">
+    <i class="bi bi-hourglass-split me-1"></i>${todo.status}
+  </span>`;
                         } else {
-                            statusBadge = `<span class="badge bg-secondary">${todo.status}</span>`;
+                            statusBadge = `<span class="badge bg-secondary">
+    <i class="bi bi-x-circle me-1"></i>${todo.status}
+  </span>`;
                         }
+                        
+                        
                         
                         elemenDaftar.append(`
         <tr>
@@ -172,30 +157,30 @@
                             location.reload();
                         }
                     });
-                });
-                
-                $('#todo-form').on('submit', async function(event) {
-                event.preventDefault();
-                
-                const teks = $('#task-input').val();
-                const status = $('#status-select').val();
-                
-                // Validasi sederhana
-                if (!teks || !status) {
-                    alert('Mohon isi semua kolom!');
-                    return;
-                }
-                
-                // Kirim data ke Firestore
-                try {
-                    await tambahTodo(teks, '', status); // deskripsi dikosongkan
-                    alert('Tugas berhasil ditambahkan!');
-                    location.reload(); // Refresh halaman agar daftar tugas terupdate
-                } catch (error) {
-                    console.error('Gagal menambahkan tugas:', error);
-                    alert('Terjadi kesalahan saat menambahkan tugas.');
-                }
-                });
+                    
+                    
+                    $('#todo-form').on('submit', async function(event) {
+                        event.preventDefault();
+                        
+                        const teks = $('#task-input').val();
+                        const status = $('#status-select').val();
+                        
+                        // Validasi sederhana
+                        if (!teks || !status) {
+                            alert('Mohon isi semua kolom!');
+                            return;
+                        }
+                        
+                        // Kirim data ke Firestore
+                        try {
+                            await tambahTodo(teks, '', status); // deskripsi dikosongkan
+                            alert('Tugas berhasil ditambahkan!');
+                            location.reload(); // Refresh halaman agar daftar tugas terupdate
+                        } catch (error) {
+                            console.error('Gagal menambahkan tugas:', error);
+                            alert('Terjadi kesalahan saat menambahkan tugas.');
+                        }
+                    });
                 });
             </script>
             
