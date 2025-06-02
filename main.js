@@ -58,61 +58,53 @@ export async function ambilDaftarTodo() {
   }
 }
 
-
-
 // 🔹 Ambil semua todo
 export async function ambilDaftarTodo() {
-  const refDokumen = collection(basisdata, "todolist");
-  const kueri = query(refDokumen, orderBy("judul"));
-  const cuplikanKueri = await getDocs(kueri);
-  
-  let hasilKueri = [];
-  cuplikanKueri.forEach((dokumen) => {
-    hasilKueri.push({
-      id: dokumen.id,
-      judul: dokumen.data().judul,
-      deskripsi: dokumen.data().deskripsi,
-      selesai: dokumen.data().selesai
-    })
-  })
-  
-  return hasilKueri;
+  const refDokumen = collection(basisdata, "todo");
+  const kueri = query(refDokumen, orderBy("teks")); // Urutkan berdasarkan judul
+  const cuplikanKueri = await getDocs(kueri);
+  
+  let hasilKueri = [];
+  cuplikanKueri.forEach((dokumen) => {
+    hasilKueri.push({
+      id: dokumen.id,
+      teks: dokumen.data().teks,
+      status: dokumen.data().status // Ganti dari 'selesai'
+    });
+  });
+  
+  return hasilKueri;
 }
 
 // 🔹 Tambah todo
-export async function tambahTodo(judul, deskripsi, selesai = false) {
-  try {
-    await addDoc(collection(basisdata, "todolist"), {
-      teks: teks,
-      status: status
-    })
-    console.log('Berhasil menambahkan todo');
-  } catch (error) {
-    console.log('Gagal menambahkan todo: ' + error);
-  }
+export async function tambahTodo(judul, deskripsi, status = "belum") {
+  try {
+    await addDoc(collection(basisdata, "todo"), {
+      teks: teks,
+      status: status // Default "belum", bisa juga "proses" atau "selesai"
+    });
+    console.log('Berhasil menambahkan todo');
+  } catch (error) {
+    console.log('Gagal menambahkan todo: ' + error);
+  }
 }
 
 // 🔹 Hapus todo
 export async function hapusTodo(id) {
-  await deleteDoc(doc(basisdata, "todolist", id));
+  await deleteDoc(doc(basisdata, "todo", id));
 }
 
 // 🔹 Ubah todo
-export async function ubahTodo(id, judulBaru, deskripsiBaru, selesaiBaru) {
-  await updateDoc(
-    doc(basisdata, "todolist", id),
-    {
-      judul: judulBaru,
-      deskripsi: deskripsiBaru,
-      selesai: selesaiBaru
-    }
-  );
+export async function ubahTodo(id, judulBaru, deskripsiBaru, statusBaru) {
+  await updateDoc(doc(basisdata, "todo", id), {
+    teks: teksBaru,
+    status: statusBaru
+  });
 }
 
 // 🔹 Ambil detail todo berdasarkan ID
 export async function ambilTodo(id) {
-  const refDokumen = doc(basisdata, "todolist", id);
-  const snapshotDokumen = await getDoc(refDokumen);
-  
-  return snapshotDokumen.data();
+  const refDokumen = doc(basisdata, "todo", id);
+  const snapshotDokumen = await getDoc(refDokumen);
+  return snapshotDokumen.data();
 }
